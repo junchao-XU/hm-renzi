@@ -1,0 +1,5 @@
+{
+  "ignore": ["node_modules", "dist", "src", "tests", "mock"],
+  "exec": "vue-cli-service serve",
+  "watch": ["vue.config.js", ".env.development", ".env.production", ".env.staging", "public"]
+}
