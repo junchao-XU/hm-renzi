@@ -2,9 +2,9 @@
   <div class="dashboard-container">
     <div class="app-container">
       <el-card>
-        <el-tabs>
+        <el-tabs @tab-click="handleClick">
           <el-tab-pane label="登录账户设置">
-            <account-item ref="Account" :acc-show="AccShow" />
+            <account-item ref="Account" :acc-show="AccShow" @StaffBasic="getStaffBasic" />
           </el-tab-pane>
           <el-tab-pane label="个人详情">
             <details-item ref="Details" :del-show="DelShow" @StaffBasic="getStaffBasic" @StaffInfo="getStaffInfo" />
@@ -34,21 +34,7 @@ export default {
     }
   },
   async created() {
-    try {
-      await this.getStaffBasic() // 基本信息
-      this.AccShow = false
-      await this.getStaffInfo() // 个人信息
-      this.DelShow = false
-      await this.getJobsInfo() // 岗位信息
-      await this.getRoleSimple() // 简单部门列表
-      this.JobsShow = false
-    } catch (error) {
-      error
-    } finally {
-      this.AccShow = false
-      this.DelShow = false
-      this.JobsShow = false
-    }
+    await this.getStaffBasic() // 基本信息
   },
   methods: {
     // 获取员工基本信息
@@ -58,6 +44,7 @@ export default {
       Account.StaffBasic = res // 处理登录账户设置数据
       const formOfEmployment = hireType.find(item => item.id === Number(this.$route.query.emp))?.value || '未知' // 添加聘用形式字段
       Details.userInfo = { ...res, formOfEmployment } // 处理个人详情数据
+      this.AccShow = false
     },
     // 获取员工个人信息
     async getStaffInfo() {
@@ -69,10 +56,23 @@ export default {
       const res = await getJobsInfo(this.userId)
       this.$refs.Jobs.formData = res
     },
-    // 获取员工加单列表
+    // 获取员工简单列表
     async getRoleSimple() {
       const res = await getRoleSimple()
       this.$refs.Jobs.depts = res
+    },
+    // 切换tab栏 发送不同请求
+    async handleClick(tab) {
+      const index = tab.index
+      const { DelShow, JobsShow } = this
+      if (index === '1' && DelShow) {
+        await this.getStaffInfo()
+        this.DelShow = false
+      } else if (index === '2' && JobsShow) {
+        await this.getJobsInfo()
+        await this.getRoleSimple()
+        this.JobsShow = false
+      }
     }
   }
 }

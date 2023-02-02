@@ -5,6 +5,7 @@
         v-for="tag in tags"
         :key="tag.name"
         class="tag-item"
+        :class="name === tag.name ? 'active':''"
         closable
         disable-transitions
         :effect="name === tag.name ? 'dark' : 'plain'"
@@ -63,7 +64,21 @@ export default {
       line-height: 26px;
       border-radius: 0;
       margin-left: 5px;
+       &.active {
+        color: #fff;
+        &::before {
+          content: '';
+          background: #fff;
+          display: inline-block;
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          position: relative;
+          margin-right: 2px;
+        }
+      }
     }
   }
 }
+
 </style>

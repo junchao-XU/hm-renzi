@@ -39,6 +39,7 @@ export default {
         deitRoleInfo(this.StaffBasic).then(() => {
           this.$message.success('更新成功')
         }).finally(() => {
+          this.$emit('StaffBasic')
           this.$store.dispatch('user/getUserInfo') // 手动更新数据
         })
       })

@@ -1,16 +1,16 @@
 <template>
   <div v-loading="DelShow" class="user-info">
     <!-- 个人信息 -->
-    <el-form label-width="220px">
+    <el-form ref="userREF" label-width="220px" :rules="rules" :model="userInfo">
       <!-- 工号 入职时间 -->
       <el-row class="inline-info">
         <el-col :span="12">
-          <el-form-item label="工号">
+          <el-form-item label="工号" prop="workNumber">
             <el-input v-model="userInfo.workNumber" class="inputW" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="入职时间">
+          <el-form-item label="入职时间" prop="timeOfEntry">
             <el-date-picker
               v-model="userInfo.timeOfEntry"
               type="date"
@@ -23,12 +23,12 @@
       <!-- 姓名 部门 -->
       <el-row class="inline-info">
         <el-col :span="12">
-          <el-form-item label="姓名">
+          <el-form-item label="姓名" prop="username">
             <el-input v-model="userInfo.username" class="inputW" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="部门">
+          <el-form-item label="部门" prop="departmentName">
             <el-input v-model="userInfo.departmentName" class="inputW" />
           </el-form-item>
         </el-col>
@@ -36,12 +36,12 @@
       <!--手机 聘用形式  -->
       <el-row class="inline-info">
         <el-col :span="12">
-          <el-form-item label="手机">
+          <el-form-item label="手机" prop="mobile">
             <el-input v-model="userInfo.mobile" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="聘用形式">
+          <el-form-item label="聘用形式" prop="formOfEmployment">
             <el-select v-model="userInfo.formOfEmployment" class="inputW">
               <el-option
                 v-for="item in EmployeeEnum.hireType"
@@ -72,7 +72,7 @@
       </el-row>
     </el-form>
     <!-- 基础信息 -->
-    <el-form label-width="220px">
+    <el-form ref="basicREF" label-width="220px" :rules="rules" :model="formData">
       <div class="block">
         <div class="title">基础信息</div>
         <el-form-item label="最高学历">
@@ -104,7 +104,7 @@
         <el-form-item label="护照号">
           <el-input v-model="formData.passportNo" placeholder="正规护照格式" class="inputW" />
         </el-form-item>
-        <el-form-item label="身份证号">
+        <el-form-item label="身份证号" prop="idNumber">
           <el-input v-model="formData.idNumber" placeholder="正规身份证格式" class="inputW" />
         </el-form-item>
         <el-form-item label="籍贯">
@@ -127,7 +127,7 @@
           <el-input v-model="formData.birthday" placeholder="示例 0323" class="inputW" />
         </el-form-item>
         <el-form-item label="年龄">
-          <el-input v-model="formData.age" type="number" class="inputW2" />
+          <el-input v-model.number="formData.age" type="number" class="inputW2" />
         </el-form-item>
         <el-form-item label="星座">
           <el-select v-model="formData.constellation" class="inputW2">
@@ -283,6 +283,7 @@
 <script>
 import EmployeeEnum from '@/constant/employees.js'
 import { deitRoleInfo, editRoleDel } from '@/api/employees'
+// import { checkiDNumber } from '@/filters'
 export default {
   props: { DelShow: { type: Boolean, default: false }},
   data() {
@@ -352,24 +353,45 @@ export default {
         isThereAnyCompetitionRestriction: '', // 有无竞业限制
         proofOfDepartureOfFormerCompany: '', // 前公司离职证明
         remarks: '' // 备注
+      },
+      rules: {
+        username: [
+          { required: true, message: '请输入员工名字', trigger: 'blur' },
+          { min: 1, max: 4, message: '长度为1-4个字符', trigger: 'blur' }
+        ],
+        mobile: [
+          { required: true, message: '请输入手机号', trigger: 'blur' },
+          { pattern: /^1[3|4|5|7|8][0-9]\d{8}$/, message: '请输入正确格式', trigger: 'blur' }
+        ],
+        formOfEmployment: [{ required: true, message: '请输入聘用形式', trigger: 'blur' }],
+        workNumber: [{ required: true, message: '请输入员工工号', trigger: 'blur' }],
+        departmentName: [{ required: true, message: '请输入部门名字', trigger: 'blur' }],
+        timeOfEntry: [{ required: true, message: '请输入入职日期', trigger: 'blur' }]
+        // idNumber: [{ validator: checkiDNumber, trigger: 'blur' }]
       }
     }
   },
   methods: {
     // 更新个人信息
     saveUser() {
-      deitRoleInfo(this.userInfo).then(() => {
-        this.$message.success('更新完成')
-      }).finally(() => {
-        this.$emit('StaffBasic') // 手动刷新数据
+      this.$refs.userREF.validate(isOk => {
+        if (!isOk) return false
+        deitRoleInfo(this.userInfo).then(() => {
+          this.$message.success('更新完成')
+        }).finally(() => {
+          this.$emit('StaffBasic') // 手动刷新数据
+        })
       })
     },
     // 更新基本数据
     savePersonal() {
-      editRoleDel(this.formData).then(() => {
-        this.$message.success('更新成功')
-      }).finally(() => {
-        this.$emit('StaffInfo')
+      this.$refs.basicREF.validate(isOk => {
+        if (!isOk) return false
+        editRoleDel(this.formData).then(() => {
+          this.$message.success('更新成功')
+        }).finally(() => {
+          this.$emit('StaffInfo')
+        })
       })
     }
   }

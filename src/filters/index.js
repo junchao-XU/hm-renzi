@@ -1,5 +1,11 @@
 // import parseTime, formatTime and set to filter
 
+// 引入包
+import moment from 'moment'
+// 封装时间过滤器
+export const filterTime = (val, str) => {
+  return moment(val).format(str)
+}
 /**
  * Show plural label if time is plural number
  * @param {number} time
@@ -225,17 +231,17 @@ export function checkPassword(rule, value, callback) {
   }
 }
 // 手机号证验证
-export function checkTel(value, callback) {
+export function checkTel(rule, value, callback) {
   var reg = /^1[3|4|5|7|8][0-9]\d{8}$/
-  return reg.test(value)
+  return reg.test(value) ? callback() : callback(new Error())
 }
 // 身份证验证
-export function checkiDNumber(value, callback) {
+export function checkiDNumber(rule, value, callback) {
   var reg = /\d{17}[\d|x]|\d{15}/
-  return reg.test(value)
+  return reg.test(value) ? callback() : callback(new Error('格式错误'))
 }
 // 身份证验证
-export function checkEmails(value, callback) {
+export function checkEmails(rule, value, callback) {
   var reg = /^[A-Za-zd]+([-_.][A-Za-zd]+)*@([A-Za-zd]+[-.])+[A-Za-zd]{2,5}$/
   return reg.test(value)
 }
@@ -253,17 +259,17 @@ export function checkEmail(rule, value, callback) {
   }
 }
 // 英文验证
-export function checkCode(value, callback) {
+export function checkCode(rule, value, callback) {
   var reg = /^[A-Za-z]+$/g
   return reg.test(value)
 }
 // qq验证
-export function checkQq(value, callback) {
+export function checkQq(rule, value, callback) {
   var reg = /^[0-9]+$/g
-  return reg.test(value)
+  return reg.test(value) ? callback() : callback(new Error('格式错误'))
 }
 // 银行卡号
-export function formatBankNo(BankNo, callback) {
+export function formatBankNo(ruleBankNo, callback) {
   var strBin = '10,18,30,35,37,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,58,60,62,65,68,69,84,87,88,94,95,98,99'
   return strBin
 }

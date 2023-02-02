@@ -102,10 +102,10 @@ export default {
         addStaff(this.formData).then(() => {
           this.$message.success('添加成功')
         }).finally(() => {
+          this.$parent.getStaffList() // 刷新数据
           this.close()
         })
       })
-      this.close()
     },
     // 获取员工部门
     getDepartments() {

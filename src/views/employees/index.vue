@@ -62,8 +62,9 @@
 <script>
 import { AddItem, RoleItem, RotateItem } from './components'
 import EmployeeEnum from '@/constant/employees'
+const { exportExcelMapPath, hireType } = EmployeeEnum
 import { deleteStaff, getRolePositive, getStaffBasic, getStaffList } from '@/api/employees'
-import { formatData } from '@/filters'
+import { filterTime } from '@/filters'
 export default {
   components: { AddItem, RoleItem, RotateItem },
   data() {
@@ -102,8 +103,7 @@ export default {
     },
     // 聘用形式
     formatEmployment(row, column, cellValue, index) {
-      const obj = EmployeeEnum.hireType.find(item => item.id === cellValue)
-      return obj ? obj.value : '未知'
+      return hireType.find(item => item.id === cellValue)?.value || '未知'
     },
     // 自定义序号
     slotIndex(index) {
@@ -163,8 +163,8 @@ export default {
     async deriveStaff() {
       const excel = await import('@/vendor/Export2Excel.js')
       const { rows } = await getStaffList({ page: 1, size: this.pag.total }) // 拿到所有数据
-      const { exportExcelMapPath, hireType } = EmployeeEnum // 拿到导出表格
       const headers = Object.keys(exportExcelMapPath) // 拿到表头 | 聘用形式
+      // 对数据进行处理
       const dataArr = rows.map(obj => {
         return headers.map(item => {
           const val = obj[exportExcelMapPath[item]] // 拿到所有的值 ==> 字符串形式
@@ -172,7 +172,7 @@ export default {
             return hireType.find(t => t.id === Number(val))?.value || '未知'
           }
           if (item === '入职日期' || item === '转正日期') {
-            return formatData(val)
+            return filterTime(val, 'YYYY年MM月DD日')
           }
           return val || ''
         })
@@ -180,8 +180,8 @@ export default {
       excel.export_json_to_excel({
         header: headers, // 表头 必填
         data: dataArr, // 具体数据 必填
-        filename: '人力资源统计表', // 非必填
-        autoWidth: true, // 非必填
+        filename: '员工统计表', // 非必填
+        autoWidth: true, // 非必填 => 表格宽度自适应
         bookType: 'xlsx' // 非必填
       })
     }
