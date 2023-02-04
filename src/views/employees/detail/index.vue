@@ -44,12 +44,20 @@ export default {
       Account.StaffBasic = res // 处理登录账户设置数据
       const formOfEmployment = hireType.find(item => item.id === Number(this.$route.query.emp))?.value || '未知' // 添加聘用形式字段
       Details.userInfo = { ...res, formOfEmployment } // 处理个人详情数据
+      if (res.staffPhoto) { Details.$refs.staffCom.fileList = [{ url: res.staffPhoto, upload: true }] }
       this.AccShow = false
     },
     // 获取员工个人信息
     async getStaffInfo() {
       const res = await getStaffInfo(this.userId)
       this.$refs.Details.formData = res
+      if (!res.staffPhoto) return
+      this.$refs.Details.$refs.myStaffPhoto.fileList = []
+      this.$refs.Details.arr = []
+      res.staffPhoto.split(',').forEach(item => {
+        this.$refs.Details.$refs.myStaffPhoto.fileList.push({ url: item })
+        this.$refs.Details.arr.push(item)
+      })
     },
     // 获取员工岗位信息
     async getJobsInfo() {

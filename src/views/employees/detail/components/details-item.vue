@@ -1,4 +1,4 @@
-<template>
+<temlte>
   <div v-loading="DelShow" class="user-info">
     <!-- 个人信息 -->
     <el-form ref="userREF" label-width="220px" :rules="rules" :model="userInfo">
@@ -58,7 +58,7 @@
         <el-col :span="12">
           <el-form-item label="员工头像">
             <!-- 放置上传图片 -->
-
+            <UploadImg ref="staffCom" @onSuccess="onUserSuccess" />
           </el-form-item>
         </el-col>
       </el-row>
@@ -90,6 +90,7 @@
 
         <el-form-item label="员工照片">
           <!-- 放置上传图片 -->
+          <UploadImg ref="myStaffPhoto" :limit-num="100" @removeImg="removeImg" @onSuccess="onStaffSuccess" />
         </el-form-item>
         <el-form-item label="国家/地区">
           <el-select v-model="formData.nationalArea" class="inputW2">
@@ -290,6 +291,8 @@ export default {
     return {
       userId: this.$route.params.id,
       EmployeeEnum, // 员工枚举数据
+      arr: [],
+      str: [],
       userInfo: {},
       formData: {
         userId: '',
@@ -380,6 +383,8 @@ export default {
           this.$message.success('更新完成')
         }).finally(() => {
           this.$emit('StaffBasic') // 手动刷新数据
+          this.$store.dispatch('user/getUserInfo') // 手动更新数据
+          this.$refs.staffCom.showPercent = false
         })
       })
     },
@@ -387,12 +392,35 @@ export default {
     savePersonal() {
       this.$refs.basicREF.validate(isOk => {
         if (!isOk) return false
+        // this.formData.staffPhoto = ''
         editRoleDel(this.formData).then(() => {
           this.$message.success('更新成功')
         }).finally(() => {
           this.$emit('StaffInfo')
+          this.$refs.myStaffPhoto.showPercent = false
         })
       })
+    },
+    // 用户图片地址
+    onUserSuccess(url) {
+      this.userInfo.staffPhoto = url
+    },
+    // 照片墙
+    onStaffSuccess(url) {
+      this.arr.push(url)
+      this.formData.staffPhoto = this.arr.join(',')
+    },
+    // 删除照片
+    removeImg(fileList) {
+      this.str = []
+      fileList.forEach(obj => {
+        this.str.push(obj.url)
+      })
+      if (this.str.length === 1) {
+        this.formData.staffPhot = this.str.join('')
+      }
+      this.formData.staffPhoto = this.str.join(',')
+      this.arr = this.str
     }
   }
 }
