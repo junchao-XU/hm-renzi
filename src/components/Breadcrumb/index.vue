@@ -21,25 +21,39 @@
 <script>
 export default {
   name: 'Breadcrumb',
-  props: ['tags', 'name'],
+  props: ['name'],
   data() {
     return {
-      tagss: this.tags || [],
-      namee: this.name
+      // tagss: this.tags || [],
+      namee: '',
+      tags: []
+    }
+  },
+  watch: {
+    // 监视当前路由得变化
+    $route: {
+      immediate: true,
+      handler(route) {
+        if (!route.meta.icon) return
+        this.namee = route.path.replace('/', '')
+        const index = this.tags.findIndex((item) => {
+          return item.name === route.path.replace('/', '')
+        })
+        if (index === -1) this.tags.push({ name: route.path.replace('/', ''), title: route.meta.title })
+      }
     }
   },
   methods: {
     // 点击删除当前路由
     closeFn(name) {
-      console.log(name)
-      this.tagss = this.tagss.filter((item) => {
+      this.tags = this.tags.filter((item) => {
         return item.name !== name
       })
-      if (this.tagss.length > 0 && this.name === name) {
-        this.namee = this.tagss[this.tagss.length - 1].name
+      if (this.tags.length > 0 && this.namee === name) {
+        this.namee = this.tags[this.tags.length - 1].name
+        console.log(this.namee)
         this.$emit('update:name', this.namee)
       }
-      this.$emit('update:tags', this.tagss)
     },
     // 点击跳转路由
     jumpRouter(name) {

@@ -75,7 +75,6 @@ export default {
       }, (err, data) => {
         if (!err && data.statusCode === 200) {
           this.$emit('onSuccess', 'http://' + data.Location)
-          // this.$emit('onSuccess', 'https://github.com/junchao-XU/hm-renzi')
         }
       })
     },

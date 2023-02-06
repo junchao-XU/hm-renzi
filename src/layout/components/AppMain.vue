@@ -1,6 +1,6 @@
 <template>
   <section class="app-main">
-    <breadcrumb class="bag" :tags.sync="tags" :name.sync="name" />
+    <breadcrumb class="brd" :name.sync="name" />
     <transition name="fade-transform" mode="out-in">
       <router-view :to="{name}" />
     </transition>
@@ -14,7 +14,6 @@ export default {
   components: { breadcrumb },
   data() {
     return {
-      tags: []
     }
   },
   computed: {
@@ -26,20 +25,20 @@ export default {
         this.$router.push(`/${val}`)
       }
     }
-  },
-  watch: {
-    // 监视当前路由得变化
-    $route: {
-      immediate: true,
-      handler(route) {
-        if (!route.meta.icon) return
-        const index = this.tags.findIndex((item) => {
-          return item.name === route.path.replace('/', '')
-        })
-        if (index === -1) this.tags.push({ name: route.path.replace('/', ''), title: route.meta.title })
-      }
-    }
   }
+  // watch: {
+  //   // 监视当前路由得变化
+  //   $route: {
+  //     immediate: true,
+  //     handler(route) {
+  //       if (!route.meta.icon) return
+  //       const index = this.tags.findIndex((item) => {
+  //         return item.name === route.path.replace('/', '')
+  //       })
+  //       if (index === -1) this.tags.push({ name: route.path.replace('/', ''), title: route.meta.title })
+  //     }
+  //   }
+  // }
 }
 </script>
 
@@ -70,6 +69,10 @@ export default {
       margin-left: 5px;
     }
   }
+}
+.brd{
+  position: fixed;
+  z-index: 2;
 }
 </style>
 

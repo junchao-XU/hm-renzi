@@ -382,9 +382,6 @@ export default {
           personalTotal = Number(personalTotal + Number(item.personalPay))
         }
       })
-      // gaolyQQ 不能在这里计算
-      // this.personalPayment = parseFloat(personalTotal).toFixed(2)
-      // this.companyPayment = parseFloat(companyTotal).toFixed(2)
       return this.paymentItemList
     }
   },
