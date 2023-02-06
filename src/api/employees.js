@@ -28,3 +28,5 @@ export const getRoleSimple = () => request.get('/sys/user/simple')
 export const editRoleDel = (data) => request.put(`/employees/${data.userId}/personalInfo`, data)
 // 修改员工岗位信息
 export const editJobsInfo = (data) => request.put(`/employees/${data.userId}/jobs`, data)
+// 给角色分配权限
+export const allocationPer = (data) => request.put('/sys/role/assignPrem', data)

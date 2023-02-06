@@ -1,10 +1,10 @@
 import Layout from '@/layout'
 export default {
-  name: 'departments',
   path: '/departments',
   component: Layout,
   children: [
     {
+      name: 'departments',
       path: '',
       component: () => import('@/views/departments'),
       meta: {

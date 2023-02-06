@@ -7,9 +7,23 @@
             <account-item ref="Account" :acc-show="AccShow" @StaffBasic="getStaffBasic" />
           </el-tab-pane>
           <el-tab-pane label="个人详情">
+            <el-row type="flex" justify="end">
+              <el-tooltip content="打印个人基本信息">
+                <router-link :to="`/employees/print/${userId}?type=personal`">
+                  <i class="el-icon-printer" />
+                </router-link>
+              </el-tooltip>
+            </el-row>
             <details-item ref="Details" :del-show="DelShow" @StaffBasic="getStaffBasic" @StaffInfo="getStaffInfo" />
           </el-tab-pane>
           <el-tab-pane label="岗位信息">
+            <el-row type="flex" justify="end">
+              <el-tooltip content="打印岗位基本信息">
+                <router-link :to="`/employees/print/${userId}?type=job`">
+                  <i class="el-icon-printer" />
+                </router-link>
+              </el-tooltip>
+            </el-row>
             <jobs-item ref="Jobs" :jobs-show="JobsShow" @JobsInfo="getJobsInfo" />
           </el-tab-pane>
         </el-tabs>

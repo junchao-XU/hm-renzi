@@ -59,18 +59,21 @@ export default {
     async getRoleList() {
       await getRoleList().then(({ rows }) => {
         this.list = rows
+        console.log(rows)
       })
     },
     // 获取员工角色id数组
     async getCheckList() {
       await getStaffBasic(this.employeeId).then(({ roleIds }) => {
-        this.checkList = roleIds
+        this.checkList = roleIds || []
       })
     }
   }
 }
 </script>
 
-<style>
-
+<style lang="scss" scoped>
+.el-checkbox-group{
+  margin-bottom: 20px;
+}
 </style>

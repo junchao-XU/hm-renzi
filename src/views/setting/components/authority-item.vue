@@ -3,12 +3,12 @@
     <el-tree
       ref="permTree"
       v-loading="loading"
-      :data="PerList"
-      show-checkbox
       node-key="id"
-      :props="defaultProps"
+      show-checkbox
+      :data="PerList"
       highlight-current
       default-expand-all
+      :props="defaultProps"
       :check-strictly="true"
       :default-checked-keys="permIds"
     />
@@ -39,6 +39,7 @@ export default {
     // 关闭
     close() {
       this.$emit('update:showDialog', false)
+      this.PerList = []
     },
     // 获取权限列表
     getPerList() {
@@ -51,6 +52,7 @@ export default {
     },
     // 提交
     commit() {
+      if (this.loading) return
       allocationRole({
         id: this.roleId,
         permIds: this.$refs.permTree.getCheckedKeys() // 树形组件里的根据 key 获取当前选中的id

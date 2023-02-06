@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-upload
-      :class="{'custom-upload' : fileComputed}"
+      :class="{'disabled' : fileComputed}"
       list-type="picture-card"
       action="#"
       :file-list="fileList"
@@ -75,6 +75,7 @@ export default {
       }, (err, data) => {
         if (!err && data.statusCode === 200) {
           this.$emit('onSuccess', 'http://' + data.Location)
+          // this.$emit('onSuccess', 'https://github.com/junchao-XU/hm-renzi')
         }
       })
     },
@@ -105,16 +106,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-// .disabled{
-//     ::v-deep {
-//     .el-upload--picture-card{
-//       display: none;
-//       }
-//     }
-// }
-.custom-upload {
-  width: 148px;
-  height: 148px;
-  overflow: hidden;
+.disabled{
+    ::v-deep {
+    .el-upload--picture-card{
+      display: none;
+      }
+    }
 }
+// .custom-upload {
+//   width: 148px;
+//   height: 148px;
+//   overflow: hidden;
+// }
 </style>

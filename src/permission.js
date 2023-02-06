@@ -16,7 +16,11 @@ router.beforeEach(async(to, from, next) => {
       next('/')
       nProgress.done()
     } else {
-      if (!store.getters.userId) await store.dispatch('user/getUserInfo')
+      if (!store.getters.userId) {
+        const { roles } = await store.dispatch('user/getUserInfo')
+        store.dispatch('permission/filterRoutes', roles)
+        next({ ...to, replace: true })
+      }
       next()
     }
   } else {

@@ -1,4 +1,4 @@
-<temlte>
+<template>
   <div v-loading="DelShow" class="user-info">
     <!-- 个人信息 -->
     <el-form ref="userREF" label-width="220px" :rules="rules" :model="userInfo">
@@ -90,7 +90,7 @@
 
         <el-form-item label="员工照片">
           <!-- 放置上传图片 -->
-          <UploadImg ref="myStaffPhoto" :limit-num="100" @removeImg="removeImg" @onSuccess="onStaffSuccess" />
+          <UploadImg ref="myStaffPhoto" :limit-num="3" @removeImg="removeImg" @onSuccess="onStaffSuccess" />
         </el-form-item>
         <el-form-item label="国家/地区">
           <el-select v-model="formData.nationalArea" class="inputW2">
@@ -359,8 +359,8 @@ export default {
       },
       rules: {
         username: [
-          { required: true, message: '请输入员工名字', trigger: 'blur' },
-          { min: 1, max: 4, message: '长度为1-4个字符', trigger: 'blur' }
+          { required: true, message: '请输入员工名字', trigger: 'blur' }
+          // { min: 1, max: 4, message: '长度为1-4个字符', trigger: 'blur' }
         ],
         mobile: [
           { required: true, message: '请输入手机号', trigger: 'blur' },

@@ -1,5 +1,6 @@
 import { getStaffBasic } from '@/api/employees'
 import { getUserInfo, login } from '@/api/user'
+import { resetRouter } from '@/router'
 import { getToken, removeToken, setToken } from '@/utils/auth'
 
 const state = {
@@ -36,16 +37,25 @@ const actions = {
   },
   // 获取用户基本信息
   async getUserInfo({ commit }) {
+    let roles = {}
     await getUserInfo().then(async(res) => {
+      roles = res
       await getStaffBasic(res.userId).then((data) => {
         commit('SET_USER_INFO', { ...res, ...data })
       })
     })
+    return roles
   },
   // 退出登录
-  Login_Out({ commit }) {
+  Login_Out({ commit, rootState }) {
     commit('REMOVE_TOKEN')
     commit('REMOVE_USER_INFO')
+    // 重置路由
+    resetRouter()
+    // 子模块调用子模块的action 可以 将 commit的第三个参数 设置成  { root: true } 就表示当前的context不是子模块了 而是父模块
+    commit('permission/setRoutes', [], { root: true })
+    // 清空vuex ==> permission 里的 routes  第二种方法
+    // rootState.permission.routes = []
   }
 }
 

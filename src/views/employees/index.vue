@@ -14,7 +14,16 @@
         <el-table :data="rows" border>
           <el-table-column type="index" :index="slotIndex" label="序号" sortable="" />
           <el-table-column prop="username" label="姓名" sortable="" />
-          <el-table-column label="头像" sortable="" />
+          <el-table-column label="头像" align="center">
+            <template v-slot="{ row }">
+              <img
+                v-imagerror="require('@/assets/common/head.jpg')"
+                :src="row.staffPhoto"
+                style="border-radius: 50%; width: 80px; height: 80px"
+                @click="QrImg(row.staffPhoto)"
+              >
+            </template>
+          </el-table-column>
           <el-table-column prop="mobile" label="手机号" sortable="" />
           <el-table-column prop="workNumber" label="工号" sortable="" />
           <el-table-column prop="formOfEmployment" :formatter="formatEmployment" label="聘用形式" sortable="" />
@@ -56,6 +65,9 @@
 
     <!-- 转正窗口 -->
     <rotate-item ref="RotateItem" :show-dialog.sync="RotateShow" />
+
+    <!-- 二维码弹窗 -->
+    <qr-code ref="QrCode" width="" :show-dialog.sync="QrCodeShow" />
   </div>
 </template>
 
@@ -69,6 +81,7 @@ export default {
   components: { AddItem, RoleItem, RotateItem },
   data() {
     return {
+      QrCodeShow: false, // 二维码显示隐藏
       RotateShow: false, // 转正显示隐藏
       RoleShow: false, // 角色显示隐藏
       AddShow: false, // 添加显示隐藏
@@ -184,6 +197,15 @@ export default {
         autoWidth: true, // 非必填 => 表格宽度自适应
         bookType: 'xlsx' // 非必填
       })
+    },
+    // 二维码
+    QrImg(url) {
+      if (url) {
+        this.QrCodeShow = true
+        this.$refs.QrCode.url = url
+      } else {
+        this.$message.warning('头像为空')
+      }
     }
   }
 }

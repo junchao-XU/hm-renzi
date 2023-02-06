@@ -1,11 +1,11 @@
 import Layout from '@/layout'
 export default {
-  name: 'setting',
-  path: '/setting',
+  path: '/settings',
   component: Layout,
   children: [
     {
       path: '',
+      name: 'settings',
       component: () => import('@/views/setting'),
       meta: {
         title: '公司设置',
